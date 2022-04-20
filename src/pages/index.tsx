@@ -72,16 +72,13 @@ function HomePage() {
           saveKopi();
         }}
         padding={15}
-        readOnly={true}
         style={{
           fontSize: 14,
           fontFamily:
             'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
           minHeight: '100vh',
         }}
-      >
-        <h1>Hello</h1>
-      </CodeEditor>
+      />
     </LoadingOverlay>
   );
 }

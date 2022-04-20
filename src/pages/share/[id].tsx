@@ -6,10 +6,11 @@ import {
   NextPage,
 } from 'next';
 import { Kopi } from '@prisma/client';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { darcula } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { css, tw } from 'twind';
 import Head from 'next/head';
+import dynamic from 'next/dynamic';
+import { useEffect } from 'react';
+import '@uiw/react-textarea-code-editor/dist.css';
 
 type Props = {
   kopi: Kopi | null;
@@ -23,19 +24,31 @@ const style = css`
   }
 `;
 
+const CodeEditor = dynamic(() => import('@uiw/react-textarea-code-editor'), {
+  ssr: false,
+});
+
 const Page: NextPage<Props> = ({ kopi }: Props) => {
+  useEffect(() => {
+    document.documentElement.setAttribute('data-color-mode', 'dark');
+  }, []);
   return (
-    <main id="kopi" className={tw(style)}>
+    <main id="kopi">
       <Head>
         <title>{kopi?.title || 'Kopi could not have been found'}</title>
       </Head>
-      <SyntaxHighlighter
-        showLineNumbers={true}
-        language="typescript"
-        style={darcula}
-      >
-        {kopi?.content}
-      </SyntaxHighlighter>
+      <CodeEditor
+        value={kopi?.content}
+        language={kopi?.syntax}
+        readOnly
+        padding={15}
+        style={{
+          fontSize: 14,
+          fontFamily:
+            'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+          minHeight: '100vh',
+        }}
+      />
     </main>
   );
 };
