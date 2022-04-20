@@ -27,7 +27,7 @@ export default async function handler(
         },
       });
       await fetch(
-        `http://localhost:3000/api/revalidate?secret=${process.env.REVALIDATE_SECRET}`,
+        `https://kopi.fusioncoding.dev/api/revalidate?secret=${process.env.REVALIDATE_SECRET}`,
       );
       res.status(200).json(kopi);
     } else {
