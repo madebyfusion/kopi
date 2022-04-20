@@ -1,6 +1,4 @@
-import { AppProps } from 'next/app';
-import '@/styles/global.css';
+import install from '@twind/with-next/app';
+import config from '../../twind.config';
 
-export default function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
-}
+export default install(config);

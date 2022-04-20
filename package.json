@@ -18,7 +18,9 @@
     "lint": "eslint --ignore-path .gitignore \"src/**/*.+(ts|js|tsx)\"",
     "format": "prettier --ignore-path .gitignore \"src/**/*.+(ts|js|tsx)\" --write",
     "postinstall": "husky install",
-    "commit": "cz"
+    "commit": "cz",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "lint-staged": {
     "./src/**/*.{ts,js,jsx,tsx}": [
@@ -27,18 +29,38 @@
     ]
   },
   "dependencies": {
-    "next": "12.1.4",
+    "@emotion/react": "11.9.0",
+    "@emotion/styled": "11.8.1",
+    "@prisma/client": "3.12.0",
+    "@uiw/react-textarea-code-editor": "2.0.1",
+    "dotenv": "16.0.0",
+    "next": "12.1.6-canary.3",
+    "next-remove-imports": "1.0.6",
     "react": "18.0.0",
-    "react-dom": "18.0.0"
+    "react-dom": "18.0.0",
+    "react-loading-overlay": "1.0.1",
+    "react-syntax-highlighter": "15.5.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.17.9",
     "@commitlint/cli": "16.2.3",
     "@commitlint/config-conventional": "16.2.1",
+    "@storybook/addon-actions": "^6.4.22",
+    "@storybook/addon-essentials": "^6.4.22",
+    "@storybook/addon-interactions": "^6.4.22",
+    "@storybook/addon-links": "^6.4.22",
+    "@storybook/react": "^6.4.22",
+    "@storybook/testing-library": "^0.0.9",
+    "@twind/preset-autoprefix": "1.0.0-next.37",
+    "@twind/preset-tailwind": "1.0.0-next.37",
+    "@twind/with-next": "1.0.0-next.35",
     "@types/node": "16.11.26",
     "@types/react": "17.0.44",
     "@types/react-dom": "18.0.0",
+    "@types/react-loading-overlay": "1.0.1",
     "@typescript-eslint/eslint-plugin": "5.18.0",
     "@typescript-eslint/parser": "5.18.0",
+    "babel-loader": "^8.2.4",
     "commitizen": "4.2.4",
     "cz-conventional-changelog": "3.3.0",
     "eslint": "8.13.0",
@@ -48,7 +70,11 @@
     "eslint-plugin-prettier": "4.0.0",
     "husky": "7.0.4",
     "lint-staged": "12.3.7",
+    "next-compose-plugins": "^2.2.1",
     "prettier": "2.6.2",
+    "prisma": "3.12.0",
+    "react-polymorphic-types": "2.0.0",
+    "twind": "1.0.0-next.37",
     "typescript": "4.6.3"
   },
   "config": {

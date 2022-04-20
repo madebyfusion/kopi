@@ -2,74 +2,88 @@ import Head from 'next/head';
 import Image from 'next/image';
 
 import styles from '@/styles/Home.module.css';
+import { css, style, tw } from 'twind';
+import { styled } from '../types/styled';
+import { Button } from '../components';
+import LoadingOverlay from 'react-loading-overlay';
 
-export default function Home() {
+import dynamic from 'next/dynamic';
+import React, { useEffect, useState } from 'react';
+import '@uiw/react-textarea-code-editor/dist.css';
+import { TextareaCodeEditorProps } from '@uiw/react-textarea-code-editor';
+import { Kopi } from '@prisma/client';
+import { useRouter } from 'next/router';
+
+const CodeEditor = dynamic(() => import('@uiw/react-textarea-code-editor'), {
+  ssr: false,
+});
+
+function HomePage() {
+  const [code, setCode] = React.useState('');
+  const [language, setLanguage] = useState('tsx');
+  const [kopi, setKopi] = useState<Kopi>();
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    document.documentElement.setAttribute('data-color-mode', 'dark');
+  }, []);
+  const router = useRouter();
+  useEffect(() => {
+    if (!kopi?.id) return;
+    console.log('Redirecting...');
+    window.history.replaceState(null, 'Redirecting...', '/share/' + kopi.id);
+    router.push({
+      pathname: '/share/[id]',
+      query: { id: kopi.id },
+    });
+  }, [kopi, router]);
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>TypeScript starter for Next.js</title>
-        <meta
-          name="description"
-          content="TypeScript starter for Next.js that includes all you need to build amazing apps"
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{` `}
-          <code className={styles.code}>pages/index.tsx</code>
-        </p>
-
-        <p className={styles.description}>This is not an official starter!</p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=typescript-nextjs-starter"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=typescript-nextjs-starter"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{` `}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
-    </div>
+    <LoadingOverlay active={loading} spinner>
+      <CodeEditor
+        value={code}
+        language={language}
+        placeholder={`Please enter ${(
+          language || ''
+        ).toLocaleUpperCase()} code.`}
+        onChange={(evn) => setCode(evn.target.value)}
+        onKeyDown={(event) => {
+          if (kopi) return;
+          //Implement save feature
+          if (!(event.ctrlKey && event.key === 's')) return;
+          event.preventDefault();
+          console.log('Save code');
+          setLoading(true);
+          const body = {
+            title: 'New Kopi',
+            syntax: language,
+            content: code,
+          };
+          const saveKopi = async () => {
+            const res = await fetch('/api/add', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(body),
+            });
+            const newKopi: Kopi = await res.json();
+            console.log('Setting new Kopi!');
+            setKopi(newKopi);
+          };
+          saveKopi();
+        }}
+        padding={15}
+        readOnly={true}
+        style={{
+          fontSize: 14,
+          fontFamily:
+            'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+          minHeight: '100vh',
+        }}
+      >
+        <h1>Hello</h1>
+      </CodeEditor>
+    </LoadingOverlay>
   );
 }
+
+export default HomePage;
