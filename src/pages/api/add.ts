@@ -28,6 +28,15 @@ export default async function handler(
       });
       await fetch(
         `https://kopi.fusioncoding.dev/api/revalidate?secret=${process.env.REVALIDATE_SECRET}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            path: `/share/${kopi.id}`,
+          }),
+        },
       );
       res.status(200).json(kopi);
     } else {
