@@ -1,16 +1,8 @@
-import Head from 'next/head';
-import Image from 'next/image';
-
-import styles from '@/styles/Home.module.css';
-import { css, style, tw } from 'twind';
-import { styled } from '../types/styled';
-import { Button } from '../components';
 import LoadingOverlay from 'react-loading-overlay';
 
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
 import '@uiw/react-textarea-code-editor/dist.css';
-import { TextareaCodeEditorProps } from '@uiw/react-textarea-code-editor';
 import { Kopi } from '@prisma/client';
 import { useRouter } from 'next/router';
 
@@ -30,7 +22,6 @@ function HomePage() {
   useEffect(() => {
     if (!kopi?.id) return;
     console.log('Redirecting...');
-    window.history.replaceState(null, 'Redirecting...', '/share/' + kopi.id);
     router.push({
       pathname: '/share/[id]',
       query: { id: kopi.id },
