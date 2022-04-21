@@ -1,8 +1,8 @@
 import LoadingOverlay from 'react-loading-overlay';
 
 import dynamic from 'next/dynamic';
-import React, { useEffect, useState } from 'react';
-import { Kopi } from '@prisma/client';
+import React, { Ref, useEffect, useRef, useState } from 'react';
+import { Kopi, Syntax } from '@prisma/client';
 import { useRouter } from 'next/router';
 
 const CodeEditor = dynamic(() => import('@uiw/react-textarea-code-editor'), {
@@ -14,9 +14,53 @@ function HomePage() {
   const [language, setLanguage] = useState('tsx');
   const [kopi, setKopi] = useState<Kopi>();
   const [loading, setLoading] = useState(false);
+  const [loop, setLoop] = useState(0);
+  const [speed, setSpeed] = useState(150);
+  const [blink, setBlink] = useState('');
+
+  const [placeholder, setPlaceholder] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const editor = useRef<HTMLTextAreaElement>();
+  const languages = Object.keys(Syntax);
+
+  const i: number = loop % languages.length;
+  const fullText: string = languages[i];
+
+  const handleTyping = () => {
+    setPlaceholder(
+      isDeleting
+        ? fullText.substring(0, placeholder.length - 1)
+        : fullText.substring(0, placeholder.length + 1),
+    );
+
+    setSpeed(isDeleting ? 40 : 170);
+
+    if (!isDeleting && placeholder === fullText) {
+      setTimeout(() => setIsDeleting(true), 500);
+    } else if (isDeleting && placeholder === '') {
+      setIsDeleting(false);
+      setLoop(loop + 1);
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      handleTyping();
+    }, speed);
+    return () => clearTimeout(timer);
+  });
+
+  useEffect(() => {
+    setTimeout(() => {
+      setBlink(blink === '|' ? '' : '|');
+    }, 540);
+  }, [blink]);
   useEffect(() => {
     document.documentElement.setAttribute('data-color-mode', 'dark');
+    console.log(languages);
   }, []);
+
   const router = useRouter();
   useEffect(() => {
     if (!kopi?.id) return;
@@ -31,9 +75,7 @@ function HomePage() {
       <CodeEditor
         value={code}
         language={language}
-        placeholder={`Please enter ${(
-          language || ''
-        ).toLocaleUpperCase()} code.`}
+        placeholder={`Paste ${placeholder}${blink} here and press ctrl + s to create a kopi`}
         onChange={(evn) => setCode(evn.target.value)}
         onKeyDown={(event) => {
           if (kopi) return;
