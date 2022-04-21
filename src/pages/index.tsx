@@ -2,7 +2,6 @@ import LoadingOverlay from 'react-loading-overlay';
 
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
-import '@uiw/react-textarea-code-editor/dist.css';
 import { Kopi } from '@prisma/client';
 import { useRouter } from 'next/router';
 
