@@ -26,7 +26,7 @@ export default async function handler(
           syntax,
         },
       });
-      await fetch(
+      /*      await fetch(
         `https://kopi.fusioncoding.dev/api/revalidate?secret=${process.env.REVALIDATE_SECRET}`,
         {
           method: 'POST',
@@ -37,7 +37,8 @@ export default async function handler(
             path: `/share/${kopi.id}`,
           }),
         },
-      );
+      );*/
+      await res.unstable_revalidate(`/share/${kopi.id}`);
       res.status(200).json(kopi);
     } else {
       res.status(400).json({ error: 'Missing title, content or syntax' });
